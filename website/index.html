@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Reversi Online</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="login-section" class="login-body" style="display:none;">
+    <div class="login-container">
+        <h1>Reversi Login</h1>
+        <div id="login-error" class="error-msg" style="display:none;"></div>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Benutzer:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Passwort:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">Anmelden</button>
+        </form>
+    </div>
+</div>
+
+<div id="game-section" class="main-container" style="display:none;">
+    <div class="game-area">
+        <header>
+            <h2>Spieler: <span id="current-player-name"></span></h2>
+            <div id="game-status">Warte auf Aktion...</div>
+            <div>
+                <button id="btn-surrender" class="small-btn" style="background-color: #c0392b; display:none;">Aufgeben</button>
+                <button id="btn-logout" class="logout-link" style="background:none; border:none; cursor:pointer;">Ausloggen</button>
+            </div>
+        </header>
+
+        <div id="board" class="board"></div>
+
+        <div class="history-panel">
+            <h3>Lokale Historie</h3>
+            <ul id="history-list"></ul>
+            <button onclick="clearHistory()" class="small-btn">Löschen</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h3>Online</h3>
+        <ul class="user-list" id="online-list"></ul>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
