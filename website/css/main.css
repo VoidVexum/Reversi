@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root { /* nightshade */
+    --color-main-50: #f1f1f2;
+    --color-main-100: #dfdfe2;
+    --color-main-200: #c3c3c8;
+    --color-main-300: #a5a5ac;
+    --color-main-400: #8b8b94;
+    --color-main-500: #6f6f7a;
+    --color-main-600: #565662;
+    --color-main-700: #3d3d47;
+    --color-main-800: #25252c;
+    --color-main-850: #1b1b21;
+    --color-main-875: #121217;
+    --color-main-900: #101014;
+    --color-main-950: #0E0E11;
+
+    --color-font-50: #efeff1;
+    --color-font-100: #e2e2e6;
+    --color-font-200: #c6c6cd;
+    --color-font-300: #aaaab5;
+    --color-font-400: #8f8f9e;
+
+    --color-primary-100: #8787FF;
+    --color-primary-200: #6b63ff;
+    --color-primary-300: #5338ff;
+
+    --color-error-100: #FF8787;
+    --color-error-200: #ff4545;
+    --color-error-300: #dc0000;
+
+    --color-warning-100: #FFF187;
+    --color-warning-200: #d6c600;
+    --color-warning-300: #a79b00;
+
+    --color-success-100: #87FF91;
+    --color-success-200: #00d936;
+    --color-success-300: #00ab29;
+
+    --border: 1px solid var(--color-main-800);
+    --border-high: 1px solid var(--color-main-700);
+    --border-seperation: 1px dashed var(--color-main-800);
+    /*--border-seperation-high: 1px dashed var(--color-main-600);*/
+    --border-transparent: 1px solid var(--transparent);
+
+    --blur: blur(10px);
+    --transparent: rgba(0, 0, 0, 0);
+    --transition: 0.3s;
+
+    --border-radius-s: 4px;
+    --border-radius-m: 8px;
+    --border-radius-xl: 16px;
+    --border-radius-full: 50%;
+
+    --box-shadow-s: 0 4px 6px 0 #0C0C0E; /* TODO Change Color */
+
+    --space-s: 0.5rem;
+    --space-m: 1rem;
+    --space-l: 2rem;
+    --space-xl: 3rem;
+    --space-xxl: 4rem;
+    --space-xxxl: 8rem;
+
+    --font-size-s: 0.9rem;
+    --font-size-m: 1rem;
+    --font-size-l: 1.2rem;
+    --font-size-xl: 1.5rem;
+    --font-size-xxl: 2rem;
+}
+
+body.snow-white {
+
+}
+
+body.ash-gray {
+
+}
+
+* {
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-size: var(--font-size-m);
+    color: var(--color-font-50);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+body {
+    background-color: var(--color-main-900);
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-main-900);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-font-400);
+    border-radius: 15px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-font-50);
+}

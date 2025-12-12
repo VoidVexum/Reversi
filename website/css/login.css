@@ -1,0 +1,80 @@
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    box-shadow: var(--box-shadow-s);
+    border-radius: var(--border-radius-xl);
+}
+
+.login-box {
+    background: var(--color-main-950);
+    padding: var(--space-xxl) var(--space-xl) var(--space-xxl) var(--space-xl);
+    border-radius: var(--border-radius-xl);
+    border: var(--border);
+    text-align: center;
+    width: 20rem;
+    position: relative;
+}
+
+.logo {
+    margin-bottom: calc(var(--space-xxl) - var(--space-m));
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.login-box input {
+    color: var(--color-font-50);
+    width: 100%;
+    padding: var(--space-s) var(--space-m);
+    margin-bottom: var(--space-m);
+    background: var(--transparent);
+    border: var(--border);
+    border-radius: var(--border-radius-m);
+    transition: var(--transition);
+}
+
+.login-box input[type="text"], .login-box input[type="password"] {
+    color: var(--color-font-300);
+    caret-color: var(--color-font-50);
+}
+
+.login-box input::placeholder {
+    color: var(--color-main-600);
+}
+
+.login-box input[type="text"]:focus, .login-box input[type="password"]:focus {
+    border: var(--border-high);
+    outline: none;
+}
+
+.login-box button {
+    font-size: var(--font-size-m);
+    color: var(--color-font-400);
+    font-weight: 600;
+    width: 100%;
+    padding: var(--space-s);
+    background: var(--color-main-800);
+    border: none;
+    border-radius: var(--border-radius-m);
+    cursor: pointer;
+    transition: var(--transition);
+    outline: none;
+}
+
+.login-box button:hover, .login-box button:focus {
+    background: var(--color-main-100);
+    color: var(--color-main-950);
+}
+
+.error {
+    color: var(--color-error-200);
+    margin-top: var(--space-m);
+    font-size: var(--font-size-s);
+    position: absolute;
+    left: 0;
+    width: 100%;
+}
