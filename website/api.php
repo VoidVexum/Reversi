@@ -51,6 +51,8 @@ elseif (isset($_SESSION['user'])) {
             }
 
             $activeGame = null;
+            $invitation = null;
+
             foreach ($data['games'] as $idx => $g) {
                 if ($g['black'] === $currentUser || $g['white'] === $currentUser) {
                     if ($g['status'] === 'active') {
@@ -62,10 +64,13 @@ elseif (isset($_SESSION['user'])) {
                         $activeGame['id'] = $idx;
                         $data['games'][$idx]['seen_' . $currentUser] = true;
                         break;
+                    } elseif ($g['status'] === 'pending' && $g['white'] === $currentUser) {
+                        $invitation = $g;
+                        $invitation['id'] = $idx;
                     }
                 }
             }
-            $response = ['status' => 'success', 'online' => $onlineUsers, 'game' => $activeGame];
+            $response = ['status' => 'success', 'online' => $onlineUsers, 'game' => $activeGame, 'invitation' => $invitation];
         }
         elseif ($action === 'invite') {
             $opponent = $_GET['opponent'] ?? '';
@@ -74,10 +79,25 @@ elseif (isset($_SESSION['user'])) {
                 'white' => $opponent,
                 'board' => null,
                 'turn' => 'black',
-                'status' => 'active'
+                'status' => 'pending'
             ];
             $data['games'][] = $newGame;
             $response = ['status' => 'success'];
+        }
+        elseif ($action === 'respond_invite') {
+            $input = json_decode(file_get_contents('php://input'), true);
+            $gId = $input['id'] ?? -1;
+            $accept = $input['accept'] ?? false;
+
+            if (isset($data['games'][$gId]) && $data['games'][$gId]['status'] === 'pending') {
+                if ($accept) {
+                    $data['games'][$gId]['status'] = 'active';
+                } else {
+                    unset($data['games'][$gId]);
+                    $data['games'] = array_values($data['games']);
+                }
+                $response = ['status' => 'success'];
+            }
         }
         elseif ($action === 'update_game') {
             $input = json_decode(file_get_contents('php://input'), true);

@@ -9,7 +9,8 @@ let state = {
     turn: null,
     myColor: null,
     gameId: -1,
-    opponent: null
+    opponent: null,
+    pendingInviteId: -1
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,10 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         doLogin();
     });
-
     document.getElementById('btn-logout').addEventListener('click', doLogout);
     document.getElementById('btn-surrender').addEventListener('click', doSurrender);
-
+    document.getElementById('modal-btn-yes').addEventListener('click', () => handleModalResponse(true));
+    document.getElementById('modal-btn-no').addEventListener('click', () => handleModalResponse(false));
+    document.getElementById('modal-btn-ok').addEventListener('click', closeModal);
     setInterval(poll, 1000);
 });
 
@@ -88,6 +90,18 @@ function poll() {
             if (data.status === 'success') {
                 updateOnlineList(data.online);
                 processGameState(data.game);
+
+                if (data.invitation && state.pendingInviteId !== data.invitation.id) {
+                    state.pendingInviteId = data.invitation.id;
+                    showConfirmModal(
+                        'Spielanfrage', 
+                        `Möchtest du gegen ${data.invitation.black} spielen?`, 
+                        (accepted) => {
+                            respondToInvite(data.invitation.id, accepted);
+                            state.pendingInviteId = -1;
+                        }
+                    );
+                }
             }
         });
 }
@@ -107,9 +121,15 @@ function updateOnlineList(users) {
 }
 
 function invite(opponent) {
-    if (confirm(`Gegen ${opponent} spielen?`)) {
-        fetch(`api.php?action=invite&opponent=${opponent}`);
-    }
+    fetch(`api.php?action=invite&opponent=${opponent}`);
+    showAlertModal('Einladung gesendet', `Warte auf Antwort von ${opponent}...`);
+}
+
+function respondToInvite(gameId, accepted) {
+    fetch('api.php?action=respond_invite', {
+        method: 'POST',
+        body: JSON.stringify({id: gameId, accept: accepted})
+    });
 }
 
 function processGameState(game) {
@@ -123,11 +143,18 @@ function processGameState(game) {
         return;
     }
 
+    if (game.status === 'active') {
+         const modal = document.getElementById('custom-modal');
+         if (modal.style.display === 'flex' && document.getElementById('modal-btn-ok').style.display !== 'none') {
+             closeModal();
+         }
+    }
+
     if (game.status === 'finished') {
         if (state.gameActive) {
             state.gameActive = false;
             let msg = (game.winner === state.user) ? "Gewonnen!" : "Verloren!";
-            alert(`Spiel vorbei: ${msg}`);
+            showAlertModal('Spielende', `Spiel vorbei: ${msg}`);
             saveHistory(game.winner, game.black, game.white);
         }
         surrenderBtn.style.display = 'none';
@@ -177,10 +204,15 @@ function renderBoard() {
         for (let c = 0; c < BOARD_SIZE; c++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
+
+            if ((r + c) % 2 === 0) cell.classList.add('light');
+            else cell.classList.add('dark');
+
             if (state.board[r][c]) {
-                const disc = document.createElement('div');
-                disc.classList.add('disc', state.board[r][c]);
-                cell.appendChild(disc);
+                const img = document.createElement('img');
+                img.classList.add('disc', 'no-interp');
+                img.src = state.board[r][c] === BLACK ? 'black.png' : 'white.png';
+                cell.appendChild(img);
             }
             cell.onclick = () => handleClick(r, c);
             boardEl.appendChild(cell);
@@ -228,9 +260,50 @@ function sendUpdate() {
 }
 
 function doSurrender() {
-    if (confirm("Wirklich aufgeben?")) {
-        fetch(`api.php?action=surrender&id=${state.gameId}`);
+    showConfirmModal("Aufgeben", "Wirklich aufgeben?", (yes) => {
+        if (yes) {
+            fetch(`api.php?action=surrender&id=${state.gameId}`);
+        }
+    });
+}
+
+// --- Modal Logic ---
+let currentModalCallback = null;
+
+function showConfirmModal(title, text, callback) {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-text').innerText = text;
+    
+    document.getElementById('modal-btn-yes').style.display = 'inline-block';
+    document.getElementById('modal-btn-no').style.display = 'inline-block';
+    document.getElementById('modal-btn-ok').style.display = 'none';
+
+    currentModalCallback = callback;
+    document.getElementById('custom-modal').style.display = 'flex';
+}
+
+function showAlertModal(title, text) {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-text').innerText = text;
+
+    document.getElementById('modal-btn-yes').style.display = 'none';
+    document.getElementById('modal-btn-no').style.display = 'none';
+    document.getElementById('modal-btn-ok').style.display = 'inline-block';
+
+    currentModalCallback = null;
+    document.getElementById('custom-modal').style.display = 'flex';
+}
+
+function handleModalResponse(result) {
+    if (currentModalCallback) {
+        currentModalCallback(result);
     }
+    closeModal();
+}
+
+function closeModal() {
+    document.getElementById('custom-modal').style.display = 'none';
+    currentModalCallback = null;
 }
 
 function saveHistory(winner, p1, p2) {
